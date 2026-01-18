@@ -4,23 +4,34 @@ import DarkModeToggle from './components/DarkModeToggle'
 import Cart from './components/Cart'
 
 const App = () => {
-  // TODO: Implement state for dark mode toggle
-  const [darkMode, darkModeToggle] = useState("Dark");
+  // Dark Mode State
+  const [darkMode, setDarkMode] = useState("Dark");
 
   const toggleModeHandler = () => {
-    if (darkMode == "Dark") {
-      darkModeToggle("Light")
-    } else if (darkMode == "Light") {
-      darkModeToggle("Dark")
-    };
+    setDarkMode(prev => prev === "Dark" ? "Light" : "Dark");
   };
 
-  // TODO: Implement state for cart management
+  // Cart State
+  const [cartItems, setCartItems] = useState([]);
 
-  // TODO: Implement state for category filtering
+  const updatecartItem = (item) => {
+    setCartItems([...cartItems, item]) 
+  }; 
+
+  // Category Filter State
+  const [selectedCategory, setSelectedCategory] = useState("all");
+
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+  }
 
   return (
-    <div>
+    <div className={darkMode} style={{ 
+        backgroundColor: darkMode === "Dark" ? "#333" : "#FFF",
+        color: darkMode === "Dark" ? "#FFF" : "#000",
+        minHeight: "100vh",
+        padding: "20px"
+    }}>
       <h1>🛒 Shopping App</h1>
       <p>
         Welcome! Your task is to implement filtering, cart management, and dark
@@ -29,17 +40,22 @@ const App = () => {
       
       <DarkModeToggle Mode={darkMode} ToggleMode={toggleModeHandler}/><br />
 
-      {/* TODO: Implement category filter dropdown */}
       <label>Filter by Category: </label>
-      <select>
+      {/* 1. Attached the onChange handler here */}
+      <select onChange={handleCategoryChange} value={selectedCategory}>
         <option value="all">All</option>
         <option value="Fruits">Fruits</option>
         <option value="Dairy">Dairy</option>
       </select>
 
-      <ProductList />
+      {/* 2. Passed the category and the add function down as props */}
+      <ProductList 
+        category={selectedCategory} 
+        onAddToCart={updatecartItem} 
+      />
 
-      {/* TODO: Implement and render Cart component */}
+      {/* 3. Passed the cartItems to Cart */}
+      <Cart items={cartItems} />
     </div>
   )
 }
